@@ -1,5 +1,6 @@
 const http = require("http");
 
+/*axios boilerplate start*/
 const host = '0.0.0.0';
 const port = 8000;
 const axios = require('axios');
@@ -11,16 +12,19 @@ const instance = axios.create({
             'Authorization' : 'Basic Y2tleV84Yjk3OTUxYWFkZTc0MDhkOGYwMzIyZTk1ZjE6Og=='
 }
 })
+/*axios boilerplate end*/
 
 var required_chain_ids = [137];//ethereum, fantom and polygon
 var count = 0;
 var positive_bal_contracts;
 var chain_data_contracts= [];
+var wallet_address = '0x6AE65a7033a84bb36778fEA6607A25a0d6c8EE50';
 
+//loop through each chain id and fetch balances
  for(let i=0; i<required_chain_ids.length; i++)
  {
     console.log("chain id -" +required_chain_ids[i]);
-    url = required_chain_ids[i] + "/address/0x6AE65a7033a84bb36778fEA6607A25a0d6c8EE50/balances_v2/";
+    url = required_chain_ids[i] + "/address/"+wallet_address+"/balances_v2/";
 
     instance.get(url)
 .then(function (response) {
@@ -59,7 +63,6 @@ var chain_data_contracts= [];
 const requestListener = function (req, res) {
     res.setHeader("Content-Type", "application/json");
     res.writeHead(200);
-    console.log("request recieved and responded!")
     res.end(JSON.stringify(chain_data_contracts));
 };
 
