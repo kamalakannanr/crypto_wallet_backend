@@ -39,13 +39,14 @@ app.get("/all", (req, res) => {
           var response_data_json = JSON.parse(
             JSON.stringify(responses[i].data)
           );
-          var full_contract_list = response_data_json.data.items;
-          const filtered_contracts = full_contract_list.filter(contract => contract.balance > 0);
-           // console.log(filtered_contracts);
-          chain_data_contracts = chain_data_contracts.concat(
-            filtered_contracts
+          const filtered_contracts = remove_zero_bal_quote(
+            response_data_json.data.items
           );
+          // console.log(filtered_contracts);
+          chain_data_contracts =
+            chain_data_contracts.concat(filtered_contracts);
         }
+        enrich_list_with_id(chain_data_contracts);
         console.log("responses combined");
         res.setHeader("Content-Type", "application/json");
         res.send(chain_data_contracts);
@@ -69,7 +70,9 @@ app.get("/chain/:id", (req, res) => {
     .then(function (response) {
       var response_data_json = JSON.parse(JSON.stringify(response.data));
       var full_contract_list = response_data_json.data.items;
-      const filtered_contracts = full_contract_list.filter(contract => contract.balance > 0);
+      var filtered_contracts = enrich_list_with_id(
+        remove_zero_bal_quote(full_contract_list)
+      );
       //console.log(filtered_contracts);
       res.setHeader("Content-Type", "application/json");
       res.send(filtered_contracts);
@@ -82,3 +85,19 @@ app.get("/chain/:id", (req, res) => {
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
+
+function remove_zero_bal_quote(contract_list) {
+  const filtered_contracts = contract_list.filter(
+    (contract) => contract.balance > 0 && contract.quote > 0
+  );
+  return filtered_contracts;
+}
+
+function enrich_list_with_id(full_contract_list) {
+  var i = 0;
+  full_contract_list.forEach((element) => {
+    element.id = i++;
+    //console.log(element);
+  });
+  return full_contract_list;
+}
