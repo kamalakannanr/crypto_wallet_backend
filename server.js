@@ -17,13 +17,10 @@ const instance = axios.create({
 });
 
 var required_chain_ids = [1, 250, 137]; //ethereum, fantom and polygon
-var axios_gets = [];
-var count = 0;
-var positive_bal_contracts;
-var chain_data_contracts = [];
 var wallet_address = "0x6AE65a7033a84bb36778fEA6607A25a0d6c8EE50";
 
 app.get("/all", (req, res) => {
+  var axios_gets = [];
   for (let i = 0; i < required_chain_ids.length; i++) {
     console.log("chain id -" + required_chain_ids[i]);
     url =
@@ -34,6 +31,7 @@ app.get("/all", (req, res) => {
     .all(axios_gets)
     .then(
       axios.spread((...responses) => {
+        var chain_data_contracts = [];
         for (let i = 0; i < responses.length; i++) {
           //console.log(responses[i].data);
           var response_data_json = JSON.parse(
