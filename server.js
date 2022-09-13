@@ -1,11 +1,14 @@
-const http = require("http");
+import express from "express";
+import axios from "axios";
+import { remove_zero_bal_quote, enrich_list_with_id } from "./arrayUtils.js";
+//const http = require("http");
 
-const express = require("express");
+//const express = require("express");
 const app = express();
 
 const host = "0.0.0.0";
 const port = 8000;
-const axios = require("axios");
+//const axios = require("axios");
 
 const instance = axios.create({
   baseURL: "https://api.covalenthq.com/v1",
@@ -23,7 +26,7 @@ app.get("/all", (req, res) => {
   var axios_gets = [];
   for (let i = 0; i < required_chain_ids.length; i++) {
     console.log("chain id -" + required_chain_ids[i]);
-    url =
+    var url =
       required_chain_ids[i] + "/address/" + wallet_address + "/balances_v2/";
     axios_gets[i] = instance.get(url);
   }
@@ -84,18 +87,18 @@ app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
 
-function remove_zero_bal_quote(contract_list) {
-  const filtered_contracts = contract_list.filter(
-    (contract) => contract.balance > 0 && contract.quote > 0
-  );
-  return filtered_contracts;
-}
+//function remove_zero_bal_quote(contract_list) {
+//   const filtered_contracts = contract_list.filter(
+//     (contract) => contract.balance > 0 && contract.quote > 0
+//   );
+//   return filtered_contracts;
+// }
 
-function enrich_list_with_id(full_contract_list) {
-  var i = 0;
-  full_contract_list.forEach((element) => {
-    element.id = i++;
-    //console.log(element);
-  });
-  return full_contract_list;
-}
+// function enrich_list_with_id(full_contract_list) {
+//   var i = 0;
+//   full_contract_list.forEach((element) => {
+//     element.id = i++;
+//     //console.log(element);
+//   });
+//   return full_contract_list;
+// }
